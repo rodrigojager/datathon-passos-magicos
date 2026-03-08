@@ -1,6 +1,6 @@
 # Datathon Passos Mágicos
 
-Solução completa de Machine Learning Engineering para estimar o risco de defasagem escolar futura de estudantes da Associação Passos Mágicos.
+Solução completa de Machine Learning Engineering para estimar o risco de defasagem escolar futura de estudantes da Associação Passos Mágicos. O deploy com swagger, documentação, dashboard com gráficos etc pode ser visto em [Datathon - Rodrigo Jäger](https://rodrigojager.com/datathon/)
 
 ## Resumo
 
