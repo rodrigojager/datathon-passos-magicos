@@ -49,17 +49,12 @@ Os demais candidatos treinados também ficam disponíveis para uso manual na tel
 datathon-entrega/
 ├── app/
 │   ├── main.py
-│   ├── model/
 │   ├── static/
 │   └── templates/
-├── artifacts/
-│   ├── exports/
-│   └── logs/
 ├── dados/
 ├── docs/
 │   ├── chapters/
-│   ├── 00_visao_geral_e_estrutura_do_projeto.md
-│   └── 01_referencia_de_arquivos_e_metodos.md
+│   └── README.md
 ├── instrucoes/
 ├── src/
 │   ├── config.py
@@ -85,6 +80,12 @@ datathon-entrega/
 ├── requirements.txt
 └── README.md
 ```
+
+Diretórios gerados em execução, e por isso não versionados:
+
+- `app/model/`
+- `artifacts/`
+- `data/`
 
 ## Execução com Docker Compose
 
@@ -264,6 +265,7 @@ Cobertura mínima exigida:
 
 ## Documentação
 
-Documentação consolidada:
+Documentação disponível no repositório:
 
+- [docs/README.md](docs/README.md)
 - [docs/chapters](docs/chapters)
