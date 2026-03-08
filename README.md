@@ -17,6 +17,12 @@ Fluxo principal:
 7. a predição devolve a decisão binária principal e scores analógicos complementares
 8. relatórios exportáveis são gerados a partir dessas execuções persistidas
 
+Mais detalhes em:
+
+- [1. Visão Geral](docs/chapters/01_visao_geral.md)
+- [3. Dados, Normalização e Persistência](docs/chapters/03_dados_normalizacao_e_persistencia.md)
+- [4. Pipeline de Machine Learning](docs/chapters/04_pipeline_de_machine_learning.md)
+
 ## Arquitetura
 
 - API e dashboard: FastAPI
@@ -26,6 +32,10 @@ Fluxo principal:
 - Serialização do modelo: joblib
 - Testes: pytest + pytest-cov
 - Infraestrutura: Docker + docker compose
+
+Mais detalhes em:
+
+- [2. Arquitetura e Organização do Projeto](docs/chapters/02_arquitetura_e_organizacao_do_projeto.md)
 
 ## Modelos Comparados
 
@@ -42,6 +52,12 @@ O modelo estatístico padrão da API atualmente selecionado é:
 O baseline permanece no monitoramento e na análise comparativa porque é uma régua importante de negócio.
 
 Os demais candidatos treinados também ficam disponíveis para uso manual na tela de `Predição`, por meio do dropdown de seleção de modelo.
+
+Mais detalhes em:
+
+- [4. Pipeline de Machine Learning](docs/chapters/04_pipeline_de_machine_learning.md)
+- [5. Resultados do Modelo](docs/chapters/05_resultados_do_modelo.md)
+- [7. Conclusão e Aprendizados](docs/chapters/07_conclusao_e_aprendizados.md)
 
 ## Estrutura do Repositório
 
@@ -86,6 +102,10 @@ Diretórios gerados em execução, e por isso não versionados:
 - `app/model/`
 - `artifacts/`
 - `data/`
+
+Mais detalhes em:
+
+- [2. Arquitetura e Organização do Projeto](docs/chapters/02_arquitetura_e_organizacao_do_projeto.md)
 
 ## Execução com Docker Compose
 
@@ -139,6 +159,10 @@ curl -X POST "http://127.0.0.1:8000/train"
 Start-Process "http://127.0.0.1:8000/dashboard"
 ```
 
+Mais detalhes em:
+
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
+
 ## Execução Local
 
 Instalar dependências:
@@ -156,6 +180,10 @@ uvicorn app.main:app --reload
 ```
 
 Se optar por rodar sem Docker, o PostgreSQL precisa estar acessível e a variável `DATABASE_URL` precisa apontar para ele corretamente.
+
+Mais detalhes em:
+
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
 
 ## Endpoints Principais
 
@@ -185,6 +213,10 @@ Dashboard:
 - `/dashboard/logs`
 - `/dashboard/docs`
 
+Mais detalhes em:
+
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
+
 ## Publicação
 
 Se a aplicação for publicada atrás de um prefixo de URL:
@@ -192,6 +224,11 @@ Se a aplicação for publicada atrás de um prefixo de URL:
 ```text
 ROOT_PATH=/seu_basepath
 ```
+
+Mais detalhes em:
+
+- [2. Arquitetura e Organização do Projeto](docs/chapters/02_arquitetura_e_organizacao_do_projeto.md)
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
 
 ## Exemplos de Uso
 
@@ -243,6 +280,11 @@ Scores de transição:
 curl -X GET "http://127.0.0.1:8000/monitor/transition-scores"
 ```
 
+Mais detalhes em:
+
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
+- [5. Resultados do Modelo](docs/chapters/05_resultados_do_modelo.md)
+
 ## Testes
 
 ```bash
@@ -253,9 +295,21 @@ Cobertura mínima exigida:
 
 - `80%`
 
+Mais detalhes em:
+
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
+
 ## Documentação
 
 Documentação disponível no repositório:
 
 - [docs/README.md](docs/README.md)
 - [docs/chapters](docs/chapters)
+- [1. Visão Geral](docs/chapters/01_visao_geral.md)
+- [2. Arquitetura e Organização do Projeto](docs/chapters/02_arquitetura_e_organizacao_do_projeto.md)
+- [3. Dados, Normalização e Persistência](docs/chapters/03_dados_normalizacao_e_persistencia.md)
+- [4. Pipeline de Machine Learning](docs/chapters/04_pipeline_de_machine_learning.md)
+- [5. Resultados do Modelo](docs/chapters/05_resultados_do_modelo.md)
+- [6. Operação da Solução](docs/chapters/06_operacao_da_solucao.md)
+- [7. Conclusão e Aprendizados](docs/chapters/07_conclusao_e_aprendizados.md)
+- [8. Glossário Essencial](docs/chapters/08_glossario_essencial.md)
