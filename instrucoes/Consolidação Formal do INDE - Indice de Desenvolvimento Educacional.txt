@@ -1,0 +1,487 @@
+# Consolidação Formal do INDE (Índice de Desenvolvimento Educacional)
+
+## 1. Visão geral
+
+| Item | Consolidação |
+|---|---|
+| Nome do índice | INDE = Índice de Desenvolvimento Educacional |
+| Objetivo | Consolidar, em uma única nota, o desenvolvimento educacional do estudante a partir de dimensões acadêmicas, psicossociais e psicopedagógicas |
+| Escala-base dos indicadores | Os indicadores são tratados em escala compatível com nota até 10 pontos |
+| Estrutura por fase | O cálculo muda entre Fases 0 a 7 e Fase 8 |
+| Dimensões avaliadas | Acadêmica, Psicossocial e Psicopedagógica |
+| Natureza dos dados | Parte dos dados vem de registros objetivos (fase, notas, tarefas) e parte de avaliações técnicas/humanas (psicólogos, educadores, psicopedagogos, autoavaliação) |
+
+---
+
+## 2. Dimensões e indicadores
+
+| Dimensão | Indicador | Sigla | Natureza |
+|---|---|---|---|
+| Acadêmica | Indicador de Adequação de Nível | IAN | Avaliação |
+| Acadêmica | Indicador de Desempenho Acadêmico | IDA | Avaliação |
+| Acadêmica | Indicador de Engajamento | IEG | Avaliação |
+| Psicossocial | Indicador de Autoavaliação | IAA | Avaliação |
+| Psicossocial | Indicador Psicossocial | IPS | Conselho / avaliação técnica |
+| Psicopedagógica | Indicador Psicopedagógico | IPP | Conselho / avaliação técnica |
+| Psicopedagógica | Indicador do Ponto de Virada | IPV | Conselho / avaliação técnica |
+
+---
+
+## 3. Composição do INDE por fase
+
+| Faixa de fase | Fórmula consolidada |
+|---|---|
+| Fases 0 a 7 | INDE = (IAN x 0,1) + (IDA x 0,2) + (IEG x 0,2) + (IAA x 0,1) + (IPS x 0,1) + (IPP x 0,1) + (IPV x 0,2) |
+| Fase 8 | INDE = (IAN x 0,1) + (IDA x 0,4) + (IEG x 0,2) + (IAA x 0,1) + (IPS x 0,2) |
+
+---
+
+## 4. Pesos dos indicadores por fase
+
+| Indicador | Nome | Fases 0 a 7 | Fase 8 |
+|---|---|---:|---:|
+| IAN | Adequação de Nível | 10% | 10% |
+| IDA | Desempenho Acadêmico | 20% | 40% |
+| IEG | Engajamento | 20% | 20% |
+| IAA | Autoavaliação | 10% | 10% |
+| IPS | Psicossocial | 10% | 20% |
+| IPP | Psicopedagógico | 10% | N/A |
+| IPV | Ponto de Virada | 20% | N/A |
+
+---
+
+## 5. Leitura executiva da ponderação
+
+| Regra | Interpretação |
+|---|---|
+| Fases 0 a 7 usam 7 indicadores | O modelo é mais amplo e considera também a leitura psicopedagógica e de ponto de virada |
+| Fase 8 usa 5 indicadores | O modelo deixa de usar IPP e IPV |
+| IDA aumenta na Fase 8 | O desempenho acadêmico formal passa a ter maior peso |
+| IPS aumenta na Fase 8 | A avaliação psicossocial técnica também ganha maior relevância |
+| IAN, IEG e IAA permanecem | Continuam compondo o índice com pesos estáveis ou equivalentes |
+
+---
+
+## 6. Tabela mestra dos indicadores
+
+| Sigla | Nome completo | Dimensão | Peso Fases 0 a 7 | Peso Fase 8 | Dados necessários | Regra/Fórmula consolidada | Explicação operacional |
+|---|---|---|---:|---:|---|---|---|
+| IAN | Indicador de Adequação de Nível | Acadêmica | 10% | 10% | Fase efetiva do estudante na Associação; fase ideal conforme idade / trajetória esperada | Base conceitual: D = Fase Efetiva - Fase Ideal | Mede a defasagem entre a fase em que o estudante está e a fase em que idealmente deveria estar |
+| IDA | Indicador de Desempenho Acadêmico | Acadêmica | 20% | 40% | Notas de disciplinas / avaliações acadêmicas | Regra simplificada informada: IDA = (Nota Matemática + Nota Português + Nota Inglês) / 3 | Representa a proficiência acadêmica média do estudante |
+| IEG | Indicador de Engajamento | Acadêmica | 20% | 20% | Registros de tarefas, atividades acadêmicas, voluntariado e entregas | IEG = Soma das pontuações das tarefas realizadas e registradas / Número de tarefas | Mede o grau de participação e compromisso do estudante nas atividades propostas |
+| IAA | Indicador de Autoavaliação | Psicossocial | 10% | 10% | Respostas do estudante ao questionário de autoavaliação | Regra simplificada informada: IAA = Soma das pontuações das respostas / Número total de perguntas | Mede como o próprio estudante percebe sua vida, estudos, vínculos e relação com a instituição |
+| IPS | Indicador Psicossocial | Psicossocial | 10% | 20% | Avaliações feitas por psicólogos | IPS = Soma das pontuações dos avaliadores / Número de avaliadores | Consolida avaliação comportamental, emocional, social e de socialização |
+| IPP | Indicador Psicopedagógico | Psicopedagógica | 10% | N/A | Avaliações pedagógicas / psicopedagógicas | IPP = Soma das avaliações sobre aspectos pedagógicos / Número de avaliações | Mede aspectos cognitivos, emocionais, comportamentais e de socialização no processo de aprendizagem |
+| IPV | Indicador do Ponto de Virada | Psicopedagógica | 20% | N/A | Análises de evolução do aluno ao longo do tempo | IPV = análise longitudinal de progresso acadêmico, engajamento e desenvolvimento emocional | Busca identificar o quanto o estudante está integrando a transformação proposta pela educação |
+
+---
+
+## 7. Detalhamento do IAN
+
+### 7.1. Fórmula-base
+
+| Item | Regra |
+|---|---|
+| Fórmula | D = Fase Efetiva - Fase Ideal |
+| Objetivo | Identificar a defasagem educacional em relação ao esperado |
+| Tipo de dado | Objetivo / cadastral / acadêmico |
+
+### 7.2. Faixas de classificação do IAN
+
+| Condição de D | Classificação | Pontuação IAN |
+|---|---|---:|
+| D = 0 | Em fase | 10 |
+| 0 > D >= -2 | Moderada | 5 |
+| D < -2 | Severa | 2,5 |
+
+### 7.3. Exemplo formal do IAN
+
+| Item | Valor |
+|---|---|
+| Fase ideal | 7º ano |
+| Fase efetiva | 5º ano |
+| Cálculo | D = 5 - 7 = -2 |
+| Classificação | Moderada |
+| Resultado | 5 pontos |
+
+### 7.4. Interpretação do IAN
+
+| Situação | Leitura |
+|---|---|
+| Em fase | O estudante está na fase esperada |
+| Defasagem moderada | Existe atraso relevante, mas não extremo |
+| Defasagem severa | Existe atraso acentuado no percurso educacional |
+
+---
+
+## 8. Detalhamento do IDA
+
+### 8.1. Fórmula simplificada fornecida
+
+| Item | Regra |
+|---|---|
+| Fórmula | IDA = (Nota Matemática + Nota Português + Nota Inglês) / 3 |
+| Tipo de entrada | Notas internas da Associação |
+| Natureza | Média acadêmica |
+
+### 8.2. Interpretação do IDA nas imagens anteriores
+
+| Faixa de fase | Origem do dado conforme material visual |
+|---|---|
+| Fases 0 a 7 | Exames padronizados de avaliação interna das disciplinas oferecidas |
+| Fase 8 | Média obtida nas disciplinas cursadas em instituições de ensino superior conveniadas |
+
+### 8.3. Consolidação prática do IDA
+
+| Aspecto | Consolidação |
+|---|---|
+| Regra simplificada útil para implementação | Média aritmética das notas relevantes |
+| Regra institucional mais ampla | Pode variar conforme a etapa/fase e a origem formal da nota |
+| Leitura | Quanto maior o IDA, melhor o desempenho acadêmico |
+
+---
+
+## 9. Detalhamento do IEG
+
+### 9.1. Fórmula simplificada fornecida
+
+| Item | Regra |
+|---|---|
+| Fórmula | IEG = Soma das pontuações das tarefas realizadas e registradas / Número de tarefas |
+| Tipo de dado | Registros operacionais de participação |
+
+### 9.2. Exemplos de insumos do IEG
+
+| Categoria de evidência | Exemplos |
+|---|---|
+| Tarefas de casa | Entrega de deveres, atividades complementares |
+| Atividades acadêmicas | Participação em ações curriculares e atividades da Associação |
+| Voluntariado | Ações voluntárias promovidas ou reconhecidas pela Associação |
+
+### 9.3. Interpretação do IEG
+
+| Resultado | Leitura |
+|---|---|
+| Alto | Estudante consistentemente engajado |
+| Médio | Participação parcial ou irregular |
+| Baixo | Pouca adesão às atividades e registros |
+
+---
+
+## 10. Detalhamento do IAA
+
+### 10.1. Natureza do indicador
+
+| Item | Consolidação |
+|---|---|
+| Objetivo | Medir a autoimagem e a autopercepção do estudante |
+| Fonte | Questionário individual de autoavaliação |
+| Tópicos avaliados | Eu, estudos, família, amigos, Associação, professores |
+
+### 10.2. Perguntas do questionário
+
+| Código | Pergunta |
+|---|---|
+| Q1 | Como se sente consigo mesmo? |
+| Q2 | Como se sente sobre os estudos? |
+| Q3 | Como se sente sobre a sua vida familiar? |
+| Q4 | Como se sente sobre sua relação com os amigos? |
+| Q5 | Como se sente sobre a Associação Passos Mágicos? |
+| Q6 | Como se sente sobre seus professores na Passos Mágicos? |
+
+### 10.3. Regra simplificada fornecida
+
+| Item | Regra |
+|---|---|
+| Fórmula | IAA = Soma das pontuações das respostas do estudante / Número total de perguntas |
+| Observação adicional informada | Perguntas avaliadas de 0 a 10 |
+
+### 10.4. Regra operacional mostrada na tabela visual
+
+| Grupo de fases | Alternativas disponíveis | Valor por resposta |
+|---|---|---:|
+| Fases 0 a 2 | A | 1,667 |
+| Fases 0 a 2 | B | 1,167 |
+| Fases 0 a 2 | C | 0,583 |
+| Fases 3 a 8 | A | 1,667 |
+| Fases 3 a 8 | B | 1,25 |
+| Fases 3 a 8 | C | 0,833 |
+| Fases 3 a 8 | D | 0,417 |
+
+### 10.5. Consolidação técnica do IAA
+
+| Aspecto | Consolidação |
+|---|---|
+| Número de perguntas | 6 |
+| Valor máximo por pergunta | 1,667 |
+| Soma máxima total | 10,000 |
+| Interpretação mais consistente com o material visual | O questionário já é convertido para pontos em escala final até 10 |
+| Observação sobre a regra simplificada 0 a 10 | Pode ser tratada como uma descrição simplificada; operacionalmente, o material visual indica uma tabela de conversão por alternativa |
+
+### 10.6. Pictogramas do questionário
+
+| Faixa | Alternativas representadas |
+|---|---|
+| Fases 0 a 2 | A, B, C |
+| Fases 3 a 8 | A, B, C, D |
+
+---
+
+## 11. Detalhamento do IPS
+
+### 11.1. Fórmula simplificada fornecida
+
+| Item | Regra |
+|---|---|
+| Fórmula | IPS = Soma das pontuações dos avaliadores / Número de avaliadores |
+| Fonte | Avaliações realizadas por psicólogos |
+
+### 11.2. Escopo de avaliação do IPS
+
+| Eixo | Conteúdo avaliado |
+|---|---|
+| Comportamental | Comportamentos observáveis do estudante |
+| Emocional | Regulação emocional, bem-estar e expressão emocional |
+| Social | Interação social e inserção comunitária |
+| Familiar | Relações e contexto familiar |
+| Atendimento | Tipo de acompanhamento psicológico oferecido |
+
+### 11.3. Interpretação do IPS
+
+| Resultado | Leitura |
+|---|---|
+| Alto | Desenvolvimento psicossocial mais favorável |
+| Médio | Situação intermediária ou em desenvolvimento |
+| Baixo | Maior necessidade de atenção técnica |
+
+---
+
+## 12. Detalhamento do IPP
+
+### 12.1. Fórmula simplificada fornecida
+
+| Item | Regra |
+|---|---|
+| Fórmula | IPP = Soma das avaliações sobre aspectos pedagógicos / Número de avaliações |
+| Fonte | Equipe de educadores e psicopedagogos |
+
+### 12.2. Escopo de avaliação do IPP
+
+| Eixo | Conteúdo avaliado |
+|---|---|
+| Cognitivo | Desenvolvimento intelectual e aprendizagem |
+| Emocional | Aspectos emocionais relacionados ao aprender |
+| Comportamental | Comportamentos no processo educacional |
+| Socialização | Integração no ambiente educacional |
+| Programas educacionais | Evolução no contexto dos programas e atividades culturais |
+
+### 12.3. Regra de uso no INDE
+
+| Faixa de fase | Uso no cálculo |
+|---|---|
+| Fases 0 a 7 | Sim |
+| Fase 8 | Não |
+
+---
+
+## 13. Detalhamento do IPV
+
+### 13.1. Definição consolidada
+
+| Item | Consolidação |
+|---|---|
+| Nome | Indicador do Ponto de Virada |
+| Natureza | Indicador longitudinal e interpretativo |
+| Fonte | Equipe educacional / psicopedagógica, com leitura evolutiva do estudante |
+
+### 13.2. Fórmula conceitual fornecida
+
+| Item | Regra |
+|---|---|
+| Fórmula conceitual | IPV = análises longitudinais de progresso acadêmico, engajamento e desenvolvimento emocional |
+
+### 13.3. Aspectos considerados no IPV
+
+| Eixo | Conteúdo avaliado |
+|---|---|
+| Progresso acadêmico | Evolução do desempenho ao longo do tempo |
+| Engajamento | Evolução da participação do estudante |
+| Desenvolvimento emocional | Evolução emocional e adaptação |
+| Integração institucional | Nível de integração do estudante à proposta da Associação |
+| Potencial de transformação | Sinais de mudança estrutural positiva pela educação |
+
+### 13.4. Regra de uso no INDE
+
+| Faixa de fase | Uso no cálculo |
+|---|---|
+| Fases 0 a 7 | Sim |
+| Fase 8 | Não |
+
+---
+
+## 14. Fontes de dados por indicador
+
+| Indicador | Fonte principal de dados | Tipo de coleta |
+|---|---|---|
+| IAN | Registro de fase atual + fase ideal esperada | Registro acadêmico/cadastral |
+| IDA | Notas das disciplinas / exames / média acadêmica | Avaliação acadêmica |
+| IEG | Registros de tarefas, atividades e voluntariado | Registro operacional |
+| IAA | Questionário de autoavaliação respondido pelo estudante | Autoavaliação |
+| IPS | Avaliação de psicólogos | Avaliação técnica |
+| IPP | Avaliação de educadores e psicopedagogos | Avaliação técnica |
+| IPV | Análise longitudinal por equipe técnica | Análise interpretativa/evolutiva |
+
+---
+
+## 15. Exemplo de cálculo do INDE
+
+### 15.1. Exemplo hipotético para Fases 0 a 7
+
+| Indicador | Valor | Peso | Parcela ponderada |
+|---|---:|---:|---:|
+| IAN | 5,0 | 0,1 | 0,5 |
+| IDA | 7,5 | 0,2 | 1,5 |
+| IEG | 8,0 | 0,2 | 1,6 |
+| IAA | 7,0 | 0,1 | 0,7 |
+| IPS | 8,0 | 0,1 | 0,8 |
+| IPP | 7,5 | 0,1 | 0,75 |
+| IPV | 8,5 | 0,2 | 1,7 |
+| **INDE final** |  |  | **7,55** |
+
+### 15.2. Exemplo hipotético para Fase 8
+
+| Indicador | Valor | Peso | Parcela ponderada |
+|---|---:|---:|---:|
+| IAN | 5,0 | 0,1 | 0,5 |
+| IDA | 7,5 | 0,4 | 3,0 |
+| IEG | 8,0 | 0,2 | 1,6 |
+| IAA | 7,0 | 0,1 | 0,7 |
+| IPS | 8,0 | 0,2 | 1,6 |
+| **INDE final** |  |  | **7,40** |
+
+---
+
+## 16. Projeção normal e limites da nota padronizada INDE escolar
+
+### 16.1. Pontos de referência mostrados no gráfico
+
+| Marcador | Valor |
+|---|---:|
+| Limite inferior destacado | 6,110 |
+| Centro / média destacada | 7,154 |
+| Limite superior destacado | 8,198 |
+| Referência visual central complementar | 7,5 |
+| Faixas exibidas no eixo | 3,7 / 4,3 / 5,0 / 5,6 / 6,2 / 6,9 / 7,5 / 8,2 / 8,8 / 9,4 |
+
+### 16.2. Interpretação do gráfico de projeção normal
+
+| Elemento do gráfico | Interpretação |
+|---|---|
+| Curva normal | Representa a distribuição padronizada das notas INDE |
+| Faixa em torno da média | Região central de desempenho esperado |
+| Marco 6,110 | Aproxima a transição inferior relevante da distribuição |
+| Marco 7,154 | Centro da distribuição / referência média destacada |
+| Marco 8,198 | Aproxima a transição superior relevante da distribuição |
+| Barras em 3,7 a 9,4 | Exemplificam posições/faixas da nota escolar na escala visual |
+
+---
+
+## 17. Faixas de desempenho Pedra-conceito do INDE escolar
+
+| Faixa de nota | Pedra-conceito |
+|---|---|
+| 3,0 até 6,1 | Quartzo |
+| 6,1 até 7,2 | Ágata |
+| 7,2 até 8,2 | Ametista |
+| 8,2 até 9,4 | Topázio |
+
+### 17.1. Leitura operacional das faixas
+
+| Pedra-conceito | Leitura consolidada |
+|---|---|
+| Quartzo | Faixa mais baixa entre as categorias exibidas; indica maior distância em relação aos níveis superiores de desenvolvimento |
+| Ágata | Faixa intermediária inicial; indica avanço em relação à base, mas ainda abaixo das faixas mais altas |
+| Ametista | Faixa elevada; indica desempenho consolidado acima do centro intermediário |
+| Topázio | Faixa mais alta apresentada; indica desempenho de maior destaque dentro da escala visual mostrada |
+
+---
+
+## 18. Relacionamento entre indicadores e interpretação final
+
+| Camada | O que responde |
+|---|---|
+| IAN | O estudante está na fase adequada? |
+| IDA | Como está o desempenho acadêmico objetivo? |
+| IEG | O quanto o estudante participa e se engaja? |
+| IAA | Como o estudante se percebe? |
+| IPS | Como a equipe psicológica percebe o desenvolvimento psicossocial? |
+| IPP | Como a equipe educacional/psicopedagógica percebe o desenvolvimento de aprendizagem? |
+| IPV | Há sinais consistentes de transformação longitudinal pela educação? |
+| INDE | Qual é a síntese ponderada do desenvolvimento educacional do estudante? |
+
+---
+
+## 19. Regras de consolidação para entendimento humano e por LLM
+
+| Tema | Regra de entendimento consolidado |
+|---|---|
+| Escala final | O INDE é uma nota sintética calculada por média ponderada de indicadores em escala compatível com até 10 |
+| Diferença entre fases | O conjunto de indicadores muda na Fase 8 |
+| Natureza do índice | Não é apenas acadêmico; combina dados objetivos, subjetivos e técnicos |
+| IAN | É categórico, com pontuação por faixa de defasagem |
+| IDA | É média acadêmica de notas/avaliações |
+| IEG | É média de engajamento com base em tarefas e participações registradas |
+| IAA | É questionário de autoavaliação convertido em pontuação; a tabela visual indica conversão padronizada por alternativa |
+| IPS | É média das avaliações de psicólogos |
+| IPP | É média das avaliações psicopedagógicas |
+| IPV | É um indicador longitudinal e interpretativo |
+| Faixas finais | A nota consolidada pode ser interpretada pelas categorias Quartzo, Ágata, Ametista e Topázio |
+
+---
+
+## 20. Modelo tabular mínimo para armazenamento estruturado
+
+| Campo | Tipo lógico | Descrição |
+|---|---|---|
+| FaseEfetiva | número/texto | Fase em que o estudante se encontra |
+| FaseIdeal | número/texto | Fase esperada para a idade/etapa |
+| D | número | Diferença entre fase efetiva e ideal |
+| IAN | número | Nota do Indicador de Adequação de Nível |
+| NotaMatematica | número | Nota usada no IDA |
+| NotaPortugues | número | Nota usada no IDA |
+| NotaIngles | número | Nota usada no IDA |
+| IDA | número | Média de desempenho acadêmico |
+| PontuacoesEngajamento | lista numérica | Pontuações de tarefas/engajamento |
+| IEG | número | Média de engajamento |
+| RespostasIAA | lista | Respostas do questionário de autoavaliação |
+| IAA | número | Nota de autoavaliação |
+| AvaliacoesIPS | lista numérica | Notas atribuídas por psicólogos |
+| IPS | número | Média psicossocial |
+| AvaliacoesIPP | lista numérica | Notas psicopedagógicas |
+| IPP | número | Média psicopedagógica |
+| EvidenciasIPV | estrutura longitudinal | Histórico de progresso e transformação |
+| IPV | número | Nota do ponto de virada |
+| FaseGrupo | texto | "Fases 0 a 7" ou "Fase 8" |
+| INDE | número | Resultado final ponderado |
+| PedraConceito | texto | Quartzo, Ágata, Ametista ou Topázio |
+
+---
+
+## 21. Síntese final
+
+| Item | Consolidação final |
+|---|---|
+| O que o INDE mede | Desenvolvimento educacional integral do estudante |
+| Como mede | Combina indicadores acadêmicos, psicossociais e psicopedagógicos em média ponderada |
+| O que muda na Fase 8 | Saem IPP e IPV; IDA e IPS ganham peso |
+| Qual indicador capta defasagem escolar | IAN |
+| Qual indicador capta notas acadêmicas | IDA |
+| Qual indicador capta participação | IEG |
+| Qual indicador capta autopercepção | IAA |
+| Qual indicador capta leitura psicológica | IPS |
+| Qual indicador capta leitura psicopedagógica | IPP |
+| Qual indicador capta transformação longitudinal | IPV |
+| Como interpretar a nota final | Pela própria nota e pelas faixas Pedra-conceito |
+| Faixas Pedra-conceito | Quartzo (3,0–6,1), Ágata (6,1–7,2), Ametista (7,2–8,2), Topázio (8,2–9,4) |
+
+---

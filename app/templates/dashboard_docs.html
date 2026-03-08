@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block hero_text %}Documentação interativa da API no mesmo shell do dashboard, mantendo a navegação lateral disponível durante a exploração dos endpoints.{% endblock %}
+{% block content %}
+<section class="split docs-summary">
+  <div class="mini-card">
+    <div class="mini-label">OpenAPI</div>
+    <div class="mini-value">Swagger UI</div>
+    <div class="mini-note">Referência interativa de todos os endpoints e schemas.</div>
+  </div>
+  <div class="mini-card">
+    <div class="mini-label">Caminho base</div>
+    <div class="mini-value mono">{{ base_path }}/</div>
+    <div class="mini-note">A documentação respeita o prefixo configurado no ambiente.</div>
+  </div>
+  <div class="mini-card">
+    <div class="mini-label">Uso</div>
+    <div class="mini-value">Explorar e testar</div>
+    <div class="mini-note">Ideal para validar requests sem sair do painel.</div>
+  </div>
+</section>
+<section class="panel docs-panel">
+  <div class="panel-head">
+    <div>
+      <h3>Documentação Interativa</h3>
+      <p class="muted">Swagger carregado em um frame interno para preservar o menu e o contexto visual da aplicação.</p>
+    </div>
+    <a class="ghost-link" href="{{ base_path }}/swagger-ui" target="_blank" rel="noreferrer">Abrir em nova aba</a>
+  </div>
+  <div class="iframe-wrap swagger-frame"><iframe src="{{ base_path }}/swagger-ui"></iframe></div>
+</section>
+{% endblock %}

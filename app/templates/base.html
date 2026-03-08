@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page_title }} | {{ app_title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ base_path }}/static/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-base-path="{{ base_path }}">
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <symbol id="icon-grid" viewBox="0 0 24 24">
+        <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-chart" viewBox="0 0 24 24">
+        <path d="M4 19V5m0 14h16M8 15V9m4 6V6m4 9v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="icon-target" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      </symbol>
+      <symbol id="icon-table" viewBox="0 0 24 24">
+        <path d="M4 6h16v12H4zM4 10h16M9 6v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-wave" viewBox="0 0 24 24">
+        <path d="M3 12c2.5 0 2.5-4 5-4s2.5 8 5 8 2.5-6 5-6 2.5 2 3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="icon-list" viewBox="0 0 24 24">
+        <path d="M9 7h11M9 12h11M9 17h11M4 7h.01M4 12h.01M4 17h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="icon-api" viewBox="0 0 24 24">
+        <path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 5l-2 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M20 20l-4.2-4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="icon-bolt" viewBox="0 0 24 24">
+        <path d="M13 2L6 13h5l-1 9 8-12h-5l0-8z" fill="currentColor"/>
+      </symbol>
+    </defs>
+  </svg>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <button class="brand-toggle" type="button" aria-label="Expandir ou retrair menu" aria-expanded="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-menu"></use></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-label">Menu</div>
+        <nav class="nav">
+          <a href="{{ base_path }}/dashboard" class="nav-link {% if request.url.path == '/dashboard' or request.url.path == '/' %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-grid"></use></svg></span><span>Visão Geral</span>
+          </a>
+          <a href="{{ base_path }}/dashboard/models" class="nav-link {% if request.url.path == '/dashboard/models' %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-chart"></use></svg></span><span>Modelos</span>
+          </a>
+          <a href="{{ base_path }}/dashboard/predict" class="nav-link {% if request.url.path == '/dashboard/predict' %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-target"></use></svg></span><span>Predição</span>
+          </a>
+          <a href="{{ base_path }}/dashboard/drift" class="nav-link {% if request.url.path == '/dashboard/drift' %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-wave"></use></svg></span><span>Drift</span>
+          </a>
+          <a href="{{ base_path }}/dashboard/logs" class="nav-link {% if request.url.path == '/dashboard/logs' %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-list"></use></svg></span><span>Logs</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-label">API</div>
+        <nav class="nav">
+          <a href="{{ base_path }}/docs" class="nav-link {% if request.url.path == '/docs' or request.url.path == '/dashboard/docs' %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-api"></use></svg></span><span>Swagger</span>
+          </a>
+        </nav>
+      </div>
+
+      {% if docs_menu_items %}
+      <div class="sidebar-block">
+        <div class="sidebar-label">Documentação</div>
+        <nav class="nav">
+          {% for doc_item in docs_menu_items %}
+          <a href="{{ base_path }}{{ doc_item.href }}" class="nav-link {% if active_doc_slug == doc_item.slug %}active{% endif %}">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-table"></use></svg></span><span>{{ doc_item.title }}</span>
+          </a>
+          {% endfor %}
+        </nav>
+      </div>
+      {% endif %}
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-title">{{ app_title }}</div>
+        <div class="topbar-actions">
+          <span class="top-pill">Base {{ base_path or '/' }}</span>
+          <span class="top-pill subtle">FastAPI + PostgreSQL</span>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <div class="eyebrow">{{ page_title }}</div>
+          <h2>{{ page_title }}</h2>
+          <p>{% block hero_text %}{% endblock %}</p>
+        </div>
+      </section>
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script>window.BASE_PATH = document.body.dataset.basePath || '';</script>
+  <script>
+    const shell = document.querySelector('.shell');
+    const toggle = document.querySelector('.brand-toggle');
+    if (shell && toggle) {
+      const syncSidebarToggleState = () => {
+        toggle.setAttribute('aria-expanded', (!shell.classList.contains('sidebar-collapsed')).toString());
+      };
+      toggle.addEventListener('click', () => {
+        shell.classList.toggle('sidebar-collapsed');
+        syncSidebarToggleState();
+      });
+      syncSidebarToggleState();
+    }
+
+    function normalizeSortableNumber(value) {
+      let candidate = value
+        .replace(/\s+/g, '')
+        .replace(/[R$€£]/g, '')
+        .replace(/%/g, '');
+
+      if (candidate.includes(',') && candidate.includes('.')) {
+        if (candidate.lastIndexOf(',') > candidate.lastIndexOf('.')) {
+          candidate = candidate.replace(/\./g, '').replace(',', '.');
+        } else {
+          candidate = candidate.replace(/,/g, '');
+        }
+      } else if (candidate.includes(',')) {
+        candidate = candidate.replace(',', '.');
+      } else if (/^-?\d{1,3}(\.\d{3})+$/.test(candidate)) {
+        candidate = candidate.replace(/\./g, '');
+      }
+
+      return /^-?\d+(\.\d+)?$/.test(candidate) ? Number(candidate) : null;
+    }
+
+    function parseSortableValue(rawValue) {
+      const value = (rawValue || '').replace(/\u00a0/g, ' ').trim();
+      if (!value || value === '-' || /^n\/?a$/i.test(value)) {
+        return { kind: 'empty', text: '', number: null };
+      }
+
+      const numericValue = normalizeSortableNumber(value);
+      if (numericValue !== null && !Number.isNaN(numericValue)) {
+        return { kind: 'number', text: value, number: numericValue };
+      }
+
+      return {
+        kind: 'text',
+        text: value.toLocaleLowerCase('pt-BR'),
+        number: null,
+      };
+    }
+
+    function compareSortableValues(parsedA, parsedB) {
+      if (parsedA.kind === 'empty' && parsedB.kind === 'empty') return 0;
+      if (parsedA.kind === 'empty') return 1;
+      if (parsedB.kind === 'empty') return -1;
+
+      if (parsedA.kind === 'number' && parsedB.kind === 'number') {
+        return parsedA.number - parsedB.number;
+      }
+
+      if (parsedA.kind === 'number' && parsedB.kind === 'text') return -1;
+      if (parsedA.kind === 'text' && parsedB.kind === 'number') return 1;
+
+      return parsedA.text.localeCompare(parsedB.text, 'pt-BR', { numeric: true, sensitivity: 'base' });
+    }
+
+    function sortTableByColumn(table, columnIndex, direction) {
+      const tbody = table.tBodies[0];
+      if (!tbody) return;
+      const rows = Array.from(tbody.rows).map((row, index) => ({
+        row,
+        index,
+        parsed: parseSortableValue(row.cells[columnIndex]?.innerText || ''),
+      }));
+
+      rows.sort((entryA, entryB) => {
+        const comparison = compareSortableValues(entryA.parsed, entryB.parsed);
+        if (comparison !== 0) {
+          return direction === 'asc' ? comparison : -comparison;
+        }
+        return entryA.index - entryB.index;
+      });
+
+      rows.forEach(({ row }) => tbody.appendChild(row));
+    }
+
+    function initializeSortableTables(root = document) {
+      root.querySelectorAll('table').forEach((table) => {
+        if (table.dataset.sortableInitialized === 'true') return;
+        const headers = Array.from(table.querySelectorAll('thead th'));
+        if (!headers.length) return;
+
+        table.dataset.sortableInitialized = 'true';
+        table.dataset.sortDirection = 'asc';
+        table.dataset.sortColumn = '-1';
+
+        headers.forEach((header, index) => {
+          header.classList.add('sortable-header');
+          header.tabIndex = 0;
+          header.setAttribute('role', 'button');
+          header.setAttribute('aria-sort', 'none');
+          if (!header.querySelector('.sortable-header-label')) {
+            header.innerHTML = `<span class="sortable-header-label">${header.innerHTML}</span>`;
+          }
+          const sortHandler = () => {
+            const previousColumn = Number(table.dataset.sortColumn || -1);
+            const nextDirection = previousColumn === index && table.dataset.sortDirection === 'asc' ? 'desc' : 'asc';
+            table.dataset.sortColumn = String(index);
+            table.dataset.sortDirection = nextDirection;
+            headers.forEach((item, itemIndex) => {
+              item.setAttribute('aria-sort', itemIndex === index ? (nextDirection === 'asc' ? 'ascending' : 'descending') : 'none');
+            });
+            sortTableByColumn(table, index, nextDirection);
+          };
+
+          header.addEventListener('click', sortHandler);
+          header.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              sortHandler();
+            }
+          });
+        });
+      });
+    }
+
+    window.initializeSortableTables = initializeSortableTables;
+    initializeSortableTables();
+
+    document.addEventListener('click', (event) => {
+      document.querySelectorAll('.metric-help[open]').forEach((popover) => {
+        if (!popover.contains(event.target)) {
+          popover.removeAttribute('open');
+        }
+      });
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

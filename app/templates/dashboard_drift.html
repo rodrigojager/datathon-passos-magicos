@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block hero_text %}Envie um arquivo para comparar o comportamento das features com a referência do treino e visualizar alertas de drift em tabela e relatório HTML.{% endblock %}
+{% block content %}
+<section class="stats-row" id="drift-stats">
+  <article class="stat-card">
+    <div class="mini-label">Status</div>
+    <div class="mini-value">Aguardando</div>
+    <div class="mini-note">Nenhuma análise executada nesta sessão.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Alertas ativos</div>
+    <div class="mini-value">0</div>
+    <div class="mini-note">Quantidade de features sinalizadas.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Variáveis analisadas</div>
+    <div class="mini-value">0</div>
+    <div class="mini-note">Total de variáveis comparadas com a referência.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Versão dos dados</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Atualizado ao carregar o último relatório.</div>
+  </article>
+</section>
+<section class="split">
+  <div class="panel upload-box">
+    <h3>Gerar Relatório de Drift</h3>
+    <form id="drift-form">
+      <div class="action-form">
+        <div class="field">
+          <label for="drift-file">Arquivo de entrada</label>
+          <input id="drift-file" type="file" name="file" required>
+        </div>
+        <div class="field">
+          <label for="drift-year">Ano de referência</label>
+          <input id="drift-year" type="number" name="reference_year" placeholder="Opcional">
+        </div>
+        <div class="form-actions">
+          <button class="secondary" type="submit">Analisar drift</button>
+        </div>
+      </div>
+    </form>
+    <div id="drift-meta" class="muted" style="margin-top: 14px;"></div>
+  </div>
+  <div class="panel">
+    <h3>Resumo Atual</h3>
+    <div id="drift-summary" class="muted">Carregando...</div>
+  </div>
+</section>
+<section class="panel">
+  <h3>Detalhe por Feature</h3>
+  <div class="scroll-table"><table><thead><tr><th>Feature</th><th>Tipo</th><th>Alerta</th><th>Resumo</th></tr></thead><tbody id="drift-table"></tbody></table></div>
+</section>
+<section class="panel">
+  <h3>Relatório HTML</h3>
+  <div class="iframe-wrap"><iframe src="{{ base_path }}/monitor/drift/report"></iframe></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+async function refreshDriftSummary() {
+  const data = await fetch(`${window.BASE_PATH}/monitor/drift/summary`).then(r => r.json());
+  if (data.alert_count !== undefined) {
+    document.getElementById('drift-stats').innerHTML = `
+      <article class="stat-card">
+        <div class="mini-label">Status</div>
+        <div class="mini-value">Disponível</div>
+        <div class="mini-note">Execução ${data.drift_run_id || '-'} pronta para consulta.</div>
+      </article>
+      <article class="stat-card">
+        <div class="mini-label">Alertas ativos</div>
+        <div class="mini-value">${data.alert_count}</div>
+        <div class="mini-note">Variáveis com comportamento fora do esperado.</div>
+      </article>
+      <article class="stat-card">
+        <div class="mini-label">Variáveis analisadas</div>
+        <div class="mini-value">${data.feature_rows}</div>
+        <div class="mini-note">Cobertura total da análise de drift.</div>
+      </article>
+      <article class="stat-card">
+        <div class="mini-label">Versão dos dados</div>
+        <div class="mini-value">${data.data_version || '-'}</div>
+        <div class="mini-note">Materialização persistida a partir do banco.</div>
+      </article>
+    `;
+  }
+  document.getElementById('drift-summary').innerHTML = data.alert_count !== undefined ? `
+    <p><strong>Execução de drift:</strong> ${data.drift_run_id || '-'}</p>
+    <p><strong>Alertas ativos:</strong> ${data.alert_count}</p>
+    <p><strong>Variáveis analisadas:</strong> ${data.feature_rows}</p>
+    <p><strong>Versão dos dados:</strong> ${data.data_version || '-'}</p>
+    <p class="mono small">${data.report_path || ''}</p>
+  ` : '<p>Nenhum relatório de drift salvo ainda.</p>';
+  document.getElementById('drift-table').innerHTML = (data.details || []).map(row => `
+    <tr>
+      <td>${row.feature}</td>
+      <td>${row.type}</td>
+      <td><span class="pill ${row.alert ? 'alert' : 'ok'}">${row.alert ? 'Alerta' : 'Estável'}</span></td>
+      <td>${row.type === 'numeric'
+        ? `PSI: ${Number(row.psi).toFixed(4)} | Média ref: ${Number(row.reference_mean).toFixed(2)} | Média atual: ${Number(row.current_mean).toFixed(2)}`
+        : `Mudança: ${Number(row.distribution_shift).toFixed(4)} | Novas categorias: ${(Number(row.new_category_rate) * 100).toFixed(2)}%`
+      }</td>
+    </tr>
+  `).join('');
+}
+document.getElementById('drift-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+  const year = form.reference_year.value;
+  const url = year ? `${window.BASE_PATH}/monitor/drift?reference_year=${year}` : `${window.BASE_PATH}/monitor/drift`;
+  const response = await fetch(url, { method: 'POST', body: formData });
+  const data = await response.json();
+  if (!response.ok) {
+    document.getElementById('drift-meta').textContent = data.detail || 'Erro ao analisar drift.';
+    return;
+  }
+  document.getElementById('drift-meta').innerHTML = `
+    <p><strong>Schema detectado:</strong> ${data.detected_schema}</p>
+    <p><strong>Alertas:</strong> ${data.alert_count}</p>
+  `;
+  await refreshDriftSummary();
+});
+refreshDriftSummary();
+</script>
+{% endblock %}

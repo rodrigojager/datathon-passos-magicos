@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% block hero_text %}Envie um arquivo cru em qualquer layout 2022-like, 2023-like ou 2024-like. A API detecta o schema, normaliza, aplica o modelo escolhido e devolve a classe principal de risco, a probabilidade geral e scores complementares de transição.{% endblock %}
+{% block content %}
+<section class="stats-row" id="predict-stats">
+  <article class="stat-card">
+    <div class="mini-label">Status</div>
+    <div class="mini-value">Aguardando</div>
+    <div class="mini-note">Envie um arquivo para calcular os scores operacionais.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Linhas previstas</div>
+    <div class="mini-value">0</div>
+    <div class="mini-note">A contagem será atualizada após o processamento.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Probabilidade média</div>
+    <div class="mini-value">0.0000</div>
+    <div class="mini-note">Média do score binário principal.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Casos prioritários</div>
+    <div class="mini-value">0</div>
+    <div class="mini-note">Alunos com probabilidade maior ou igual a 0.80.</div>
+  </article>
+</section>
+<section class="split">
+  <div class="panel upload-box">
+    <h3>Executar Predição</h3>
+    <form id="predict-form">
+      <div class="action-form">
+        <div class="field">
+          <label for="predict-file">Arquivo de entrada</label>
+          <input id="predict-file" type="file" name="file" required>
+        </div>
+        <div class="field">
+          <div class="heading-inline">
+            <label for="predict-model">Modelo para predição</label>
+            <details class="metric-help">
+              <summary aria-label="Entender métricas">?</summary>
+              <div class="metric-help-card">
+                <strong>Como ler o resultado no dropdown?</strong>
+                <p>As opções mostram o modelo e, entre parênteses, o <strong>F2</strong> obtido no último treino.</p>
+                <p><strong>F2</strong> é a métrica principal deste projeto e dá mais peso para encontrar alunos em risco do que para evitar alertas extras.</p>
+              </div>
+            </details>
+          </div>
+          <select id="predict-model" name="selected_model_id">
+            <option value="">Carregando modelos treinados...</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="predict-year">Ano de referência</label>
+          <input id="predict-year" type="number" name="reference_year" placeholder="Opcional">
+        </div>
+        <div class="form-actions">
+          <button type="submit">Rodar previsão</button>
+        </div>
+      </div>
+    </form>
+    <div id="predict-meta" class="muted" style="margin-top: 14px;"></div>
+  </div>
+  <div class="panel">
+    <h3>Leituras Mais Associadas ao Problema</h3>
+    <p class="muted" style="margin: 0 0 12px;">
+      Resumo qualitativo com base na análise residual do baseline e nos modelos segmentados já treinados.
+    </p>
+    <div id="predict-insights" class="muted">
+      Carregando observações sobre os indicadores mais associados à entrada em risco e à recuperação.
+    </div>
+  </div>
+</section>
+<section class="split">
+  <div class="panel">
+    <h3>Alunos Sem Defasagem Atual</h3>
+    <p class="muted" style="margin: 0 0 12px;">
+      Distribuição do <strong>score de entrada em risco</strong>, ou seja, a chance de um aluno que hoje não está defasado passar a ficar em risco no próximo ciclo.
+    </p>
+    <div class="chart-box"><canvas id="predictEntryChart"></canvas></div>
+  </div>
+  <div class="panel">
+    <h3>Alunos Já Defasados</h3>
+    <p class="muted" style="margin: 0 0 12px;">
+      Distribuição do <strong>score de recuperação</strong>, ou seja, a chance de um aluno que hoje já está defasado conseguir sair dessa condição no próximo ciclo.
+    </p>
+    <div class="chart-box"><canvas id="predictRecoveryChart"></canvas></div>
+  </div>
+</section>
+<section class="panel">
+  <h3>Alunos Sem Defasagem Atual</h3>
+  <p class="muted" id="predict-entry-note" style="margin: 0 0 12px;">
+    A tabela exibirá os alunos do arquivo enviado que hoje não estão defasados. A ordenação inicial será pelo score de entrada em risco, da maior para a menor.
+  </p>
+  <div class="muted" style="margin: 0 0 14px; line-height: 1.7;">
+    <strong>Prob. risco futuro:</strong> probabilidade geral de apresentar defasagem no próximo ciclo.<br>
+    <strong>Entrada em risco:</strong> score principal desta tabela; quanto maior, maior a chance de cair em defasagem.<br>
+    <strong>Predição:</strong> decisão binária principal do modelo.<br>
+    <strong>Valor 1:</strong> indica risco de defasagem futura.<br>
+    <strong>Valor 0:</strong> indica ausência de risco de defasagem futura.
+  </div>
+  <div class="scroll-table"><table><thead><tr><th title="Identificador do aluno">RA</th><th title="Ano de referência do lote previsto">Ano</th><th title="Decisão binária principal: 1 indica risco de defasagem futura e 0 indica ausência de risco">Predição</th><th title="Probabilidade geral de risco de defasagem futura">Prob. risco futuro</th><th title="Chance de entrar em risco para quem hoje não está defasado">Entrada em risco</th><th title="Modelo usado na previsão">Modelo</th></tr></thead><tbody id="predict-entry-table"></tbody></table></div>
+</section>
+<section class="panel">
+  <h3>Alunos Já Defasados</h3>
+  <p class="muted" id="predict-recovery-note" style="margin: 0 0 12px;">
+    A tabela exibirá os alunos do arquivo enviado que hoje já estão defasados. A ordenação inicial será pelo score de recuperação, da maior para a menor.
+  </p>
+  <div class="muted" style="margin: 0 0 14px; line-height: 1.7;">
+    <strong>Prob. risco futuro:</strong> probabilidade geral de continuar em trajetória de defasagem futura.<br>
+    <strong>Recuperação:</strong> score principal desta tabela; quanto maior, maior a chance de sair da situação de risco.<br>
+    <strong>Persistência:</strong> score complementar; quanto maior, maior a chance de continuar em risco.<br>
+    <strong>Predição:</strong> decisão binária principal do modelo.<br>
+    <strong>Valor 1:</strong> indica risco de defasagem futura.<br>
+    <strong>Valor 0:</strong> indica ausência de risco de defasagem futura.
+  </div>
+  <div class="scroll-table"><table><thead><tr><th title="Identificador do aluno">RA</th><th title="Ano de referência do lote previsto">Ano</th><th title="Decisão binária principal: 1 indica risco de defasagem futura e 0 indica ausência de risco">Predição</th><th title="Probabilidade geral de risco de defasagem futura">Prob. risco futuro</th><th title="Chance de recuperação para quem hoje já está defasado">Recuperação</th><th title="Chance de permanecer em risco para quem hoje já está defasado">Persistência</th><th title="Modelo usado na previsão">Modelo</th></tr></thead><tbody id="predict-recovery-table"></tbody></table></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+let predictEntryChart;
+let predictRecoveryChart;
+let predictModelCatalog = [];
+
+function createRiskBins(rows, key) {
+  const bins = [0, 0, 0, 0, 0];
+  rows.forEach((row) => {
+    const score = Number(row[key]);
+    if (Number.isNaN(score)) return;
+    if (score < 0.2) bins[0] += 1;
+    else if (score < 0.4) bins[1] += 1;
+    else if (score < 0.6) bins[2] += 1;
+    else if (score < 0.8) bins[3] += 1;
+    else bins[4] += 1;
+  });
+  return bins;
+}
+
+function renderDistributionChart(canvasId, existingChart, rows, key, datasetLabel, color) {
+  if (existingChart) existingChart.destroy();
+  return new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: {
+      labels: [
+        '0% a 20%',
+        '20% a 40%',
+        '40% a 60%',
+        '60% a 80%',
+        '80% a 100%'
+      ],
+      datasets: [{
+        label: datasetLabel,
+        data: createRiskBins(rows, key),
+        backgroundColor: color,
+        borderRadius: 4,
+        maxBarThickness: 52
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => items[0]?.label || '',
+            label: (context) => `${context.raw} aluno(s) nessa faixa`,
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#7a7f9a', maxRotation: 0, autoSkip: false }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Quantidade de alunos', color: '#7a7f9a' },
+          ticks: { color: '#7a7f9a' },
+          grid: { color: '#eff1f6' }
+        }
+      }
+    }
+  });
+}
+
+function formatProbability(value) {
+  if (value == null || Number.isNaN(Number(value))) return '-';
+  return Number(value).toFixed(4);
+}
+
+async function loadPredictInsights() {
+  const target = document.getElementById('predict-insights');
+  try {
+    const response = await fetch(`${window.BASE_PATH}/monitor/actionable-insights`);
+    if (!response.ok) throw new Error('Analise indisponivel');
+    const data = await response.json();
+    const worseningSignals = (data.worsening_signals || []).slice(0, 5);
+    const recoverySignals = (data.recovery_signals || []).slice(0, 5);
+    target.innerHTML = `
+      <p><strong>Entre os alunos que hoje não estão defasados:</strong> os sinais acionáveis mais associados à <strong>piora</strong> foram ${
+        worseningSignals.length
+          ? worseningSignals.map((item) => `${item.label} (${item.interpretation})`).join('; ')
+          : 'indisponíveis'
+      }.</p>
+      <p><strong>Entre os alunos que hoje já estão defasados:</strong> os sinais acionáveis mais associados à <strong>melhora</strong> foram ${
+        recoverySignals.length
+          ? recoverySignals.map((item) => `${item.label} (${item.interpretation})`).join('; ')
+          : 'indisponíveis'
+      }.</p>
+      <p><strong>Leitura operacional:</strong> priorize ações sobre desempenho acadêmico, engajamento, acompanhamento e suporte psicossocial/psicopedagógico antes de olhar para proxies estruturais.</p>
+    `;
+  } catch (error) {
+    target.textContent = 'A análise complementar de indicadores ainda não está disponível.';
+  }
+}
+
+function formatMetric(value) {
+  if (value == null || Number.isNaN(Number(value))) return '-';
+  return Number(value).toFixed(4);
+}
+
+async function loadPredictModels() {
+  const select = document.getElementById('predict-model');
+  try {
+    const response = await fetch(`${window.BASE_PATH}/monitor/models/comparison`);
+    if (!response.ok) throw new Error('Modelos indisponiveis');
+    const data = await response.json();
+    const candidates = [...(data.candidates || [])]
+      .filter((item) => item.model_name !== 'baseline_persistencia')
+      .sort(
+      (a, b) => Number(b.metrics?.f2 || 0) - Number(a.metrics?.f2 || 0)
+    );
+    predictModelCatalog = candidates;
+    if (!candidates.length) {
+      select.innerHTML = '<option value="">Nenhum modelo treinado ainda</option>';
+      select.disabled = true;
+      return;
+    }
+
+    const bestOverall = candidates[0]?.model_id;
+    const bestStatistical = data.selected_model_id || candidates[0]?.model_id;
+    select.innerHTML = candidates.map((item) => {
+      const notes = [`F2 ${formatMetric(item.metrics?.f2)}`];
+      if (item.model_id === bestOverall) notes.push('melhor resultado');
+      else if (item.model_id === bestStatistical) notes.push('melhor modelo estatístico');
+      return `<option value="${item.model_id}">${item.model_name} / ${item.strategy} (${notes.join(', ')})</option>`;
+    }).join('');
+    select.value = bestStatistical || bestOverall || candidates[0].model_id;
+  } catch (error) {
+    select.innerHTML = '<option value="">Modelos indisponíveis</option>';
+    select.disabled = true;
+  }
+}
+
+document.getElementById('predict-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+  const year = form.reference_year.value;
+  const selectedModelId = form.selected_model_id.value;
+  const params = new URLSearchParams();
+  if (year) params.set('reference_year', year);
+  if (selectedModelId) params.set('selected_model_id', selectedModelId);
+  const url = params.toString() ? `${window.BASE_PATH}/predict?${params.toString()}` : `${window.BASE_PATH}/predict`;
+  const response = await fetch(url, { method: 'POST', body: formData });
+  const data = await response.json();
+  if (!response.ok) {
+    document.getElementById('predict-meta').textContent = data.detail || 'Erro ao prever.';
+    return;
+  }
+  const predictions = data.predictions || [];
+  document.getElementById('predict-meta').innerHTML = `
+    <p><strong>Schema detectado:</strong> ${data.detected_schema}</p>
+    <p><strong>Ano de referência:</strong> ${data.reference_year}</p>
+    <p><strong>Linhas previstas:</strong> ${data.rows}</p>
+    <p><strong>Modelo principal usado:</strong> ${predictions[0]?.modelo_utilizado || '-' } / ${predictions[0]?.estrategia_utilizada || '-'}</p>
+    <p><strong>Fonte operacional:</strong> PostgreSQL + bundle joblib</p>
+  `;
+  const entryRows = predictions
+    .filter((row) => row.grupo_baseline_atual === 'nao_defasado')
+    .sort((a, b) => Number(b.score_entrada_em_risco || -1) - Number(a.score_entrada_em_risco || -1));
+  const recoveryRows = predictions
+    .filter((row) => row.grupo_baseline_atual === 'ja_defasado')
+    .sort((a, b) => Number(b.score_recuperacao || -1) - Number(a.score_recuperacao || -1));
+  const meanProbability = predictions.length
+    ? predictions.reduce((sum, row) => sum + Number(row.probabilidade_risco_defasagem_futura || 0), 0) / predictions.length
+    : 0;
+  const highPriority = predictions.filter((row) => Number(row.probabilidade_risco_defasagem_futura || 0) >= 0.8).length;
+  document.getElementById('predict-stats').innerHTML = `
+    <article class="stat-card">
+      <div class="mini-label">Status</div>
+      <div class="mini-value">Concluído</div>
+      <div class="mini-note">Schema ${data.detected_schema} reconhecido com sucesso.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">Linhas previstas</div>
+      <div class="mini-value">${data.rows}</div>
+      <div class="mini-note">Ano operacional ${data.reference_year}.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">Probabilidade média</div>
+      <div class="mini-value">${meanProbability.toFixed(4)}</div>
+      <div class="mini-note">Score médio do risco de defasagem futura.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">Casos prioritários</div>
+      <div class="mini-value">${highPriority}</div>
+      <div class="mini-note">Probabilidade maior ou igual a 0.80.</div>
+    </article>
+  `;
+  document.getElementById('predict-entry-note').innerHTML = `
+    A tabela abaixo mostra <strong>${entryRows.length}</strong> alunos que hoje <strong>não estão defasados</strong>.
+    A ordenação inicial está pelo <strong>score de entrada em risco</strong>, da maior para a menor.
+    Clique em qualquer coluna para reordenar e identificar os com menor chance de cair.
+  `;
+  document.getElementById('predict-recovery-note').innerHTML = `
+    A tabela abaixo mostra <strong>${recoveryRows.length}</strong> alunos que hoje <strong>já estão defasados</strong>.
+    A ordenação inicial está pelo <strong>score de recuperação</strong>, da maior para a menor.
+    Clique em qualquer coluna para reordenar e identificar os com menor chance de se recuperar.
+  `;
+  document.getElementById('predict-entry-table').innerHTML = entryRows.map(row => `
+    <tr>
+      <td>${row.ra}</td>
+      <td>${row.ano_referencia}</td>
+      <td>${row.prediction_risco_defasagem_futura}</td>
+      <td>${formatProbability(row.probabilidade_risco_defasagem_futura)}</td>
+      <td>${formatProbability(row.score_entrada_em_risco)}</td>
+      <td>${row.modelo_utilizado}</td>
+    </tr>
+  `).join('');
+  document.getElementById('predict-recovery-table').innerHTML = recoveryRows.map(row => `
+    <tr>
+      <td>${row.ra}</td>
+      <td>${row.ano_referencia}</td>
+      <td>${row.prediction_risco_defasagem_futura}</td>
+      <td>${formatProbability(row.probabilidade_risco_defasagem_futura)}</td>
+      <td>${formatProbability(row.score_recuperacao)}</td>
+      <td>${formatProbability(row.score_persistencia_defasagem)}</td>
+      <td>${row.modelo_utilizado}</td>
+    </tr>
+  `).join('');
+
+  predictEntryChart = renderDistributionChart(
+    'predictEntryChart',
+    predictEntryChart,
+    entryRows,
+    'score_entrada_em_risco',
+    'Quantidade de alunos por faixa de entrada em risco',
+    '#f46a6a'
+  );
+  predictRecoveryChart = renderDistributionChart(
+    'predictRecoveryChart',
+    predictRecoveryChart,
+    recoveryRows,
+    'score_recuperacao',
+    'Quantidade de alunos por faixa de recuperação',
+    '#34c38f'
+  );
+});
+
+loadPredictInsights();
+loadPredictModels();
+</script>
+{% endblock %}

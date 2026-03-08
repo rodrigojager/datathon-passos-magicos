@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block hero_text %}Resumo executivo da solução: base canônica no PostgreSQL, modelo padrão da API, métricas recentes e sinais de drift.{% endblock %}
+{% block content %}
+<section class="cards" id="overview-cards"></section>
+<section class="summary-strip" id="overview-summary"></section>
+<section class="split">
+  <div class="panel">
+    <div class="heading-inline">
+      <h3>Métricas do Último Treino</h3>
+      <details class="metric-help">
+        <summary aria-label="Entender métricas">?</summary>
+        <div class="metric-help-card">
+          <strong>O que significam essas métricas?</strong>
+          <p><strong>F2:</strong> mede o equilíbrio entre encontrar os alunos em risco e evitar alertas errados, dando mais importância a não deixar passar quem realmente precisa de atenção.</p>
+          <p><strong>Recall:</strong> porcentagem dos alunos realmente em risco que o modelo conseguiu identificar.</p>
+          <p><strong>Precision:</strong> porcentagem dos alunos marcados como risco que realmente estavam em risco.</p>
+          <p><strong>PR-AUC:</strong> mede quão bem o modelo consegue destacar os alunos com risco de defasagem futura em relação aos demais.</p>
+          <p><strong>ROC-AUC:</strong> capacidade geral de distinguir alunos com e sem risco futuro.</p>
+        </div>
+      </details>
+    </div>
+    <div class="chart-box compact"><canvas id="trainingMetricsChart"></canvas></div>
+  </div>
+  <div class="panel">
+    <h3>Comparação do Último Treino</h3>
+    <div id="latest-comparison" class="metric-list muted">Carregando...</div>
+  </div>
+</section>
+<section class="split">
+  <div class="panel">
+    <h3>Desvios do Baseline</h3>
+    <div id="baseline-analysis" class="metric-list muted">Carregando...</div>
+  </div>
+  <div class="panel">
+    <h3>Scores de Transição</h3>
+    <div id="transition-scores" class="metric-list muted">Carregando...</div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+function renderSparkline(points) {
+  const step = 84 / Math.max(points.length - 1, 1);
+  const coords = points.map((point, index) => `${index * step},${40 - point * 3}`).join(' ');
+  return `
+    <svg class="sparkline" viewBox="0 0 84 42" preserveAspectRatio="none" aria-hidden="true">
+      <polyline class="sparkline-fade" points="0,40 84,40"></polyline>
+      <polyline points="${coords}"></polyline>
+    </svg>
+  `;
+}
+
+async function loadOverview() {
+  const metrics = await fetch(`${window.BASE_PATH}/monitor/metrics`).then(r => r.json());
+
+  const cards = [
+    {
+      label: 'Linhas consolidadas',
+      value: metrics.consolidated_rows ?? 0,
+      note: 'Base canônica aluno-ano consolidada no PostgreSQL.',
+      badge: 'Dados atualizados',
+      tone: 'success',
+      sparkline: [2, 4, 5, 7, 6, 9, 8]
+    },
+    {
+      label: 'Alunos únicos',
+      value: metrics.unique_students ?? 0,
+      note: 'Quantidade distinta de estudantes no consolidado.',
+      badge: 'Identidade consolidada',
+      tone: 'info',
+      sparkline: [3, 4, 4, 6, 7, 7, 8]
+    },
+    {
+      label: 'Modelo padrão',
+      value: metrics.selected_model || 'Não treinado',
+      note: `Estratégia padrão: ${metrics.selected_strategy || '-'}`,
+      badge: 'Padrão da API',
+      tone: 'info',
+      sparkline: [5, 6, 5, 7, 6, 8, 7]
+    },
+    {
+      label: 'Alertas de drift',
+      value: metrics.drift_alert_count ?? 0,
+      note: 'Variáveis com mudança relevante de distribuição.',
+      badge: (metrics.drift_alert_count ?? 0) > 0 ? 'Exige atenção' : 'Estável',
+      tone: (metrics.drift_alert_count ?? 0) > 0 ? 'info' : 'success',
+      sparkline: [1, 2, 3, 4, 5, 3, 2]
+    }
+  ];
+  document.getElementById('overview-cards').innerHTML = cards.map((card) => `
+    <article class="card">
+      <div class="card-shell">
+        <div>
+          <div class="card-label">${card.label}</div>
+          <div class="card-value">${card.value}</div>
+          <div class="card-meta">${card.note}</div>
+          <div class="card-badge ${card.tone}">${card.badge}</div>
+        </div>
+        ${renderSparkline(card.sparkline)}
+      </div>
+    </article>
+  `).join('');
+
+  const summary = [
+    ['Anos de referência', (metrics.reference_years || []).join(', ') || '-'],
+    ['Modelo padrão da API', metrics.selected_model || 'Não treinado']
+  ];
+  document.getElementById('overview-summary').innerHTML = summary.map(([label, value]) => `
+    <article class="summary-chip">
+      <div>
+        <strong>${label}</strong>
+        <span>${value}</span>
+      </div>
+    </article>
+  `).join('');
+
+  const trainingMetrics = metrics.training_metrics || {};
+  new Chart(document.getElementById('trainingMetricsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['F2', 'Recall', 'Precision', 'PR-AUC', 'ROC-AUC'],
+      datasets: [{
+        label: 'Último treino',
+        data: [
+          trainingMetrics.f2 || 0,
+          trainingMetrics.recall || 0,
+          trainingMetrics.precision || 0,
+          trainingMetrics.pr_auc || 0,
+          trainingMetrics.roc_auc || 0
+        ],
+        backgroundColor: ['#5b5fd6','#50a5f1','#34c38f','#f1b44c','#74788d'],
+        borderRadius: 4,
+        maxBarThickness: 48
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#7a7f9a' } },
+        y: { beginAtZero: true, max: 1, ticks: { color: '#7a7f9a' }, grid: { color: '#eff1f6' } }
+      }
+    }
+  });
+
+  const trainingCandidates = metrics.candidate_count || 0;
+  const baseline = metrics.baseline_analysis || {};
+  const transition = metrics.transition_scores || {};
+  document.getElementById('latest-comparison').innerHTML = metrics.selected_model ? `
+    <p><strong>Modelo padrão da API:</strong> ${metrics.selected_model}</p>
+    <p><strong>Estratégia padrão:</strong> ${metrics.selected_strategy || '-'}</p>
+    <p><strong>Candidatos comparados no último treino:</strong> ${trainingCandidates}</p>
+    <p><strong>F2 do modelo padrão:</strong> ${(trainingMetrics.f2 || 0).toFixed(4)}</p>
+    <p><strong>Recall do modelo padrão:</strong> ${(trainingMetrics.recall || 0).toFixed(4)}</p>
+    <p><strong>PR-AUC do modelo padrão:</strong> ${(trainingMetrics.pr_auc || 0).toFixed(4)}</p>
+    <p class="muted">Os demais modelos treinados continuam disponíveis para predição manual no dropdown da tela de Predição.</p>
+  ` : '<p>Nenhum treinamento concluído ainda.</p>';
+
+  document.getElementById('baseline-analysis').innerHTML = baseline.baseline_analysis_run_id ? `
+    <p><strong>Execução:</strong> ${baseline.baseline_analysis_run_id}</p>
+    <div class="metric-highlight">${(baseline.baseline_metrics.f2 || 0).toFixed(4)}</div>
+    <p class="muted">F2 do baseline com a regra de persistência da defasagem.</p>
+    <p><strong>Falsos negativos:</strong> ${baseline.error_counts.false_negative}</p>
+    <p><strong>Falsos positivos:</strong> ${baseline.error_counts.false_positive}</p>
+  ` : '<p>Nenhuma análise do baseline disponível.</p>';
+
+  document.getElementById('transition-scores').innerHTML = transition.transition_score_run_id ? `
+    <p><strong>Execução:</strong> ${transition.transition_score_run_id}</p>
+    <div class="metric-highlight">${(transition.recovery_metrics.pr_auc || 0).toFixed(4)}</div>
+    <p class="muted">PR-AUC de recuperação destaca onde a camada analógica está mais forte no momento.</p>
+    <p><strong>Entrada em risco · F2:</strong> ${(transition.entry_metrics.f2 || 0).toFixed(4)}</p>
+    <p><strong>Entrada em risco · PR-AUC:</strong> ${(transition.entry_metrics.pr_auc || 0).toFixed(4)}</p>
+    <p><strong>Recuperação · F2:</strong> ${(transition.recovery_metrics.f2 || 0).toFixed(4)}</p>
+    <p><strong>Recuperação · PR-AUC:</strong> ${(transition.recovery_metrics.pr_auc || 0).toFixed(4)}</p>
+  ` : '<p>Scores de transição ainda não treinados.</p>';
+}
+loadOverview();
+</script>
+{% endblock %}

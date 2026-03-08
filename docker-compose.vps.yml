@@ -1,0 +1,59 @@
+services:
+  datathon-postgres:
+    image: postgres:16
+    container_name: ${COMPOSE_POSTGRES_CONTAINER}
+    restart: unless-stopped
+    env_file:
+      - .env.vps
+    volumes:
+      - datathon_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - datathon-internal
+
+  datathon-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_APP_CONTAINER}
+    restart: unless-stopped
+    depends_on:
+      datathon-postgres:
+        condition: service_healthy
+    env_file:
+      - .env.vps
+    volumes:
+      - datathon_model_data:/app/app/model
+      - datathon_artifacts:/app/artifacts
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.datathon-http.rule=Host(`${DOMAIN}`) && PathPrefix(`${APP_BASE_PATH}`)
+      - traefik.http.routers.datathon-http.entrypoints=web
+      - traefik.http.routers.datathon-http.service=datathon-svc
+      - traefik.http.routers.datathon-http.priority=120
+      - traefik.http.routers.datathon-https.rule=Host(`${DOMAIN}`) && PathPrefix(`${APP_BASE_PATH}`)
+      - traefik.http.routers.datathon-https.entrypoints=websecure
+      - traefik.http.routers.datathon-https.tls=true
+      - traefik.http.routers.datathon-https.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.routers.datathon-https.service=datathon-svc
+      - traefik.http.routers.datathon-https.priority=120
+      - traefik.http.services.datathon-svc.loadbalancer.server.port=8000
+    networks:
+      - datathon-internal
+      - traefik
+
+volumes:
+  datathon_postgres_data:
+  datathon_model_data:
+  datathon_artifacts:
+
+networks:
+  datathon-internal:
+  traefik:
+    external: true
+    name: ${TRAEFIK_NETWORK}

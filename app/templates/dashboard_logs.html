@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block hero_text %}Visualização operacional dos logs gravados pela aplicação para ingestão, treino, predição, avaliação e drift.{% endblock %}
+{% block content %}
+<section class="stats-row" id="logs-stats">
+  <article class="stat-card">
+    <div class="mini-label">Eventos</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Carregando histórico recente.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">INFO</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Mensagens operacionais de fluxo normal.</div>
+  </article>
+    <article class="stat-card">
+      <div class="mini-label">WARNING</div>
+      <div class="mini-value">-</div>
+      <div class="mini-note">Ocorrências que merecem observação.</div>
+    </article>
+  <article class="stat-card">
+    <div class="mini-label">ERROR</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Falhas registradas pela aplicação.</div>
+  </article>
+</section>
+<section class="panel">
+  <h3>Eventos Recentes</h3>
+  <div id="logs-list" class="timeline"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+async function loadLogs() {
+  const data = await fetch(`${window.BASE_PATH}/monitor/logs?limit=200`).then(r => r.json());
+  const totals = (data.logs || []).reduce((acc, log) => {
+    acc.total += 1;
+    acc[log.level] = (acc[log.level] || 0) + 1;
+    return acc;
+  }, { total: 0, INFO: 0, WARNING: 0, ERROR: 0 });
+  document.getElementById('logs-stats').innerHTML = `
+    <article class="stat-card">
+      <div class="mini-label">Eventos</div>
+      <div class="mini-value">${totals.total}</div>
+      <div class="mini-note">Últimas linhas consultadas do log operacional.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">INFO</div>
+      <div class="mini-value">${totals.INFO || 0}</div>
+      <div class="mini-note">Fluxos concluídos e marcos operacionais importantes.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">WARNING</div>
+      <div class="mini-value">${totals.WARNING || 0}</div>
+      <div class="mini-note">Sinais de atenção sem interromper o serviço.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">ERROR</div>
+      <div class="mini-value">${totals.ERROR || 0}</div>
+      <div class="mini-note">Falhas visíveis registradas no backend.</div>
+    </article>
+  `;
+  document.getElementById('logs-list').innerHTML = data.logs.map(log => `
+    <div class="log-row">
+      <strong>${log.level} · ${log.logger}</strong>
+      <div class="muted">${log.timestamp}</div>
+      <div>${log.message}</div>
+    </div>
+  `).join('');
+}
+loadLogs();
+</script>
+{% endblock %}

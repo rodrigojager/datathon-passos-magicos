@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ${COMPOSE_POSTGRES_CONTAINER}
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: ${COMPOSE_APP_CONTAINER}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "${APP_PORT}:8000"
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:

@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block hero_text %}Comparação visual entre baseline e modelos estatísticos, usando os resultados persistidos no banco e exportados para auditoria.{% endblock %}
+{% block content %}
+<section class="stats-row" id="models-stats">
+  <article class="stat-card">
+    <div class="mini-label">Melhor candidato</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Carregando ranking comparativo.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Melhor F2</div>
+    <div class="mini-value">0.0000</div>
+    <div class="mini-note">Métrica principal da seleção.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Melhor baseline</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Referência simples para calibrar a ambição dos modelos estatísticos.</div>
+  </article>
+  <article class="stat-card">
+    <div class="mini-label">Camada analógica</div>
+    <div class="mini-value">-</div>
+    <div class="mini-note">Destaque para entrada em risco ou recuperação.</div>
+  </article>
+</section>
+<section class="panel">
+  <div class="heading-inline">
+    <h3>Comparação de Candidatos</h3>
+    <details class="metric-help">
+      <summary aria-label="Entender métricas">?</summary>
+      <div class="metric-help-card">
+        <strong>O que significam essas métricas?</strong>
+        <p><strong>F2:</strong> mede o equilíbrio entre encontrar os alunos em risco e evitar alertas errados, dando mais importância a não deixar passar quem realmente precisa de atenção.</p>
+        <p><strong>Recall:</strong> porcentagem dos alunos realmente em risco que o modelo conseguiu identificar.</p>
+        <p><strong>Precision:</strong> porcentagem dos alunos marcados como risco que realmente estavam em risco.</p>
+        <p><strong>PR-AUC:</strong> mede quão bem o modelo consegue destacar os alunos com risco de defasagem futura em relação aos demais.</p>
+        <p><strong>ROC-AUC:</strong> capacidade geral de distinguir alunos com e sem risco futuro.</p>
+      </div>
+    </details>
+  </div>
+  <div class="chart-box"><canvas id="modelsChart"></canvas></div>
+</section>
+<section class="panel">
+  <div class="heading-inline">
+    <h3>Tabela de Modelos</h3>
+    <details class="metric-help">
+      <summary aria-label="Entender métricas">?</summary>
+      <div class="metric-help-card">
+        <strong>Leitura rápida das colunas</strong>
+        <p><strong>F2:</strong> métrica principal deste projeto, priorizando encontrar alunos em risco.</p>
+        <p><strong>Recall:</strong> quanto o modelo encontra dos casos realmente em risco.</p>
+        <p><strong>Precision:</strong> quanto dos alertas emitidos está correto.</p>
+        <p><strong>PR-AUC:</strong> quão bem o modelo destaca os alunos com risco de defasagem futura.</p>
+        <p><strong>ROC-AUC:</strong> separação geral entre risco e não risco.</p>
+      </div>
+    </details>
+  </div>
+  <div class="scroll-table"><table><thead><tr><th>Modelo</th><th>Estratégia</th><th>F2</th><th>Recall</th><th>Precision</th><th>PR-AUC</th><th>ROC-AUC</th></tr></thead><tbody id="models-table"></tbody></table></div>
+</section>
+<section class="panel">
+  <div class="heading-inline">
+    <h3>Modelos de Transição</h3>
+    <details class="metric-help">
+      <summary aria-label="Entender métricas">?</summary>
+      <div class="metric-help-card">
+        <strong>Como ler essa tabela?</strong>
+        <p>As métricas têm o mesmo significado da tabela principal, mas aqui medem modelos segmentados para <strong>entrada em risco</strong> e <strong>recuperação</strong>.</p>
+        <p><strong>F2:</strong> mais peso para não deixar passar alunos relevantes.</p>
+        <p><strong>PR-AUC:</strong> mostra quão bem a camada segmentada separa os casos prioritários.</p>
+      </div>
+    </details>
+  </div>
+  <div class="scroll-table"><table><thead><tr><th>Camada</th><th>Modelo</th><th>Estratégia</th><th>F2</th><th>Recall</th><th>Precision</th><th>PR-AUC</th></tr></thead><tbody id="transition-table"></tbody></table></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+async function loadModels() {
+  const data = await fetch(`${window.BASE_PATH}/monitor/models/comparison`).then(r => r.json());
+  const transition = await fetch(`${window.BASE_PATH}/monitor/transition-scores`).then(r => r.ok ? r.json() : ({}));
+  const candidates = data.candidates || [];
+  const topCandidate = [...candidates].sort((a, b) => (b.metrics.f2 || 0) - (a.metrics.f2 || 0))[0];
+  const baselineCandidate = candidates.find(item => item.model_name === 'baseline_persistencia');
+  const analogLabel = transition.transition_score_run_id
+    ? `${transition.recovery_model_name || '-'}`
+    : 'Indisponível';
+  document.getElementById('models-stats').innerHTML = `
+    <article class="stat-card">
+      <div class="mini-label">Melhor candidato</div>
+      <div class="mini-value">${topCandidate ? topCandidate.model_name : '-'}</div>
+      <div class="mini-note">${topCandidate ? topCandidate.strategy : 'Sem candidatos treinados.'}</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">Melhor F2</div>
+      <div class="mini-value">${topCandidate ? (topCandidate.metrics.f2 || 0).toFixed(4) : '0.0000'}</div>
+      <div class="mini-note">Comparação global entre baseline e modelos estatísticos.</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">Melhor baseline</div>
+      <div class="mini-value">${baselineCandidate ? (baselineCandidate.metrics.f2 || 0).toFixed(4) : '-'}</div>
+      <div class="mini-note">${baselineCandidate ? 'baseline_persistencia' : 'Baseline indisponível.'}</div>
+    </article>
+    <article class="stat-card">
+      <div class="mini-label">Camada analógica</div>
+      <div class="mini-value">${transition.transition_score_run_id ? (transition.recovery_metrics.pr_auc || 0).toFixed(4) : '-'}</div>
+      <div class="mini-note">${analogLabel} · recuperação PR-AUC.</div>
+    </article>
+  `;
+  document.getElementById('models-table').innerHTML = candidates.map(item => `
+    <tr>
+      <td>${item.model_name}</td>
+      <td>${item.strategy}</td>
+      <td>${(item.metrics.f2 || 0).toFixed(4)}</td>
+      <td>${(item.metrics.recall || 0).toFixed(4)}</td>
+      <td>${(item.metrics.precision || 0).toFixed(4)}</td>
+      <td>${(item.metrics.pr_auc || 0).toFixed(4)}</td>
+      <td>${(item.metrics.roc_auc || 0).toFixed(4)}</td>
+    </tr>
+  `).join('');
+
+  new Chart(document.getElementById('modelsChart'), {
+    type: 'bar',
+    data: {
+      labels: candidates.map(item => `${item.model_name} / ${item.strategy}`),
+      datasets: [
+        { label: 'F2', data: candidates.map(item => item.metrics.f2 || 0), backgroundColor: '#5b5fd6', borderRadius: 4, maxBarThickness: 44 },
+        { label: 'Recall', data: candidates.map(item => item.metrics.recall || 0), backgroundColor: '#34c38f', borderRadius: 4, maxBarThickness: 44 },
+        { label: 'PR-AUC', data: candidates.map(item => item.metrics.pr_auc || 0), backgroundColor: '#f1b44c', borderRadius: 4, maxBarThickness: 44 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#7a7f9a' } },
+        y: { beginAtZero: true, max: 1, ticks: { color: '#7a7f9a' }, grid: { color: '#eff1f6' } }
+      }
+    }
+  });
+
+  const transitionRows = [];
+  if (transition.transition_score_run_id) {
+    transitionRows.push({
+      layer: 'Entrada em risco',
+      model: transition.entry_model_name,
+      strategy: transition.strategy_name,
+      metrics: transition.entry_metrics
+    });
+    transitionRows.push({
+      layer: 'Recuperação',
+      model: transition.recovery_model_name,
+      strategy: transition.strategy_name,
+      metrics: transition.recovery_metrics
+    });
+  }
+  document.getElementById('transition-table').innerHTML = transitionRows.length ? transitionRows.map(item => `
+    <tr>
+      <td>${item.layer}</td>
+      <td>${item.model}</td>
+      <td>${item.strategy}</td>
+      <td>${(item.metrics.f2 || 0).toFixed(4)}</td>
+      <td>${(item.metrics.recall || 0).toFixed(4)}</td>
+      <td>${(item.metrics.precision || 0).toFixed(4)}</td>
+      <td>${(item.metrics.pr_auc || 0).toFixed(4)}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="7">Nenhum modelo de transição treinado ainda.</td></tr>';
+}
+loadModels();
+</script>
+{% endblock %}
