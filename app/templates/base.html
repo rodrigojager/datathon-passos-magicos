@@ -35,6 +35,9 @@
       <symbol id="icon-api" viewBox="0 0 24 24">
         <path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 5l-2 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </symbol>
+      <symbol id="icon-github" viewBox="0 0 24 24">
+        <path d="M12 2.5a9.5 9.5 0 0 0-3 18.52c.47.09.64-.2.64-.45v-1.58c-2.6.57-3.15-1.1-3.15-1.1-.43-1.08-1.04-1.36-1.04-1.36-.85-.58.06-.57.06-.57.94.07 1.44.96 1.44.96.84 1.43 2.2 1.02 2.74.78.08-.61.33-1.02.6-1.26-2.08-.23-4.26-1.04-4.26-4.63 0-1.02.36-1.85.96-2.5-.1-.23-.42-1.16.09-2.42 0 0 .78-.25 2.56.95A8.8 8.8 0 0 1 12 7.8c.78 0 1.56.1 2.3.31 1.78-1.2 2.56-.95 2.56-.95.51 1.26.19 2.19.09 2.42.6.65.96 1.48.96 2.5 0 3.6-2.18 4.39-4.27 4.62.34.29.64.86.64 1.73v2.56c0 .25.17.54.65.45A9.5 9.5 0 0 0 12 2.5Z" fill="currentColor"/>
+      </symbol>
       <symbol id="icon-menu" viewBox="0 0 24 24">
         <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
       </symbol>
@@ -81,6 +84,9 @@
         <nav class="nav">
           <a href="{{ base_path }}/docs" class="nav-link {% if request.url.path == '/docs' or request.url.path == '/dashboard/docs' %}active{% endif %}">
             <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-api"></use></svg></span><span>Swagger</span>
+          </a>
+          <a href="https://github.com/rodrigojager/datathon-passos-magicos" class="nav-link" target="_blank" rel="noopener noreferrer">
+            <span class="nav-icon"><svg viewBox="0 0 24 24"><use href="#icon-github"></use></svg></span><span>GitHub</span>
           </a>
         </nav>
       </div>
