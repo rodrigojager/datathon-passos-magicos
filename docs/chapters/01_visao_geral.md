@@ -65,8 +65,6 @@ Ela recebe arquivos com dados dos estudantes, organiza tudo em um padrão único
 
 O objetivo é ajudar a priorizar atenção, triagem e acompanhamento.
 
-Base configurada para publicação:
-
-- `https://rodrigojager.com/datathon`
+Quando publicada atrás de um prefixo de URL, a aplicação pode usar a variável `ROOT_PATH` para manter os caminhos internos coerentes.
 
 ---

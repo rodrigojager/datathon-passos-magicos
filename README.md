@@ -187,20 +187,10 @@ Dashboard:
 
 ## Publicação
 
-Basepath publicado:
+Se a aplicação for publicada atrás de um prefixo de URL:
 
 ```text
-https://rodrigojager.com/datathon
-```
-
-Para subir na VPS com Traefik:
-
-1. copie `.env.vps.example` para `.env.vps`
-2. ajuste as variáveis do ambiente publicado
-3. execute:
-
-```bash
-docker compose --env-file .env.vps -f docker-compose.vps.yml up -d --build
+ROOT_PATH=/seu_basepath
 ```
 
 ## Exemplos de Uso
@@ -208,19 +198,19 @@ docker compose --env-file .env.vps -f docker-compose.vps.yml up -d --build
 Bootstrap dos CSVs brutos já existentes em `dados/`:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/bootstrap"
+curl -X POST "http://127.0.0.1:8000/data/bootstrap"
 ```
 
 Treino:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/train"
+curl -X POST "http://127.0.0.1:8000/train"
 ```
 
 Predição:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/predict?reference_year=2024&selected_model_id=random_forest__strategy_b" ^
+curl -X POST "http://127.0.0.1:8000/predict?reference_year=2024&selected_model_id=random_forest__strategy_b" ^
   -F "file=@dados/BASE DE DADOS - DATATHON - PEDE2024.csv"
 ```
 
@@ -237,20 +227,20 @@ O `/predict` devolve:
 Drift:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/monitor/drift?reference_year=2024" ^
+curl -X POST "http://127.0.0.1:8000/monitor/drift?reference_year=2024" ^
   -F "file=@dados/BASE DE DADOS - DATATHON - PEDE2024.csv"
 ```
 
 Análise residual do baseline:
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/baseline-analysis"
+curl -X GET "http://127.0.0.1:8000/monitor/baseline-analysis"
 ```
 
 Scores de transição:
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/transition-scores"
+curl -X GET "http://127.0.0.1:8000/monitor/transition-scores"
 ```
 
 ## Testes

@@ -224,7 +224,7 @@ Há duas formas principais.
 Esse é o caminho mais simples para montar a base histórica inicial:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/bootstrap"
+curl -X POST "http://127.0.0.1:8000/data/bootstrap"
 ```
 
 O que esse endpoint faz:
@@ -241,7 +241,7 @@ O que esse endpoint faz:
 Esse é o caminho para anos novos, como `2025`, ou para reaproveitar a API com novos arquivos compatíveis:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/ingest?reference_year=2025" ^
+curl -X POST "http://127.0.0.1:8000/data/ingest?reference_year=2025" ^
   -F "file=@meu_arquivo_2025.csv"
 ```
 
@@ -257,7 +257,7 @@ O que esse endpoint faz:
 Se você quiser apenas baixar o arquivo já padronizado, sem inserir no banco:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/normalize" ^
+curl -X POST "http://127.0.0.1:8000/data/normalize" ^
   -F "file=@meu_arquivo_2025.csv" ^
   --output arquivo_normalizado.csv
 ```
@@ -267,7 +267,7 @@ curl -X POST "https://rodrigojager.com/datathon/data/normalize" ^
 Depois que o banco já tiver sido populado com a base consolidada, o próximo passo é treinar:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/train"
+curl -X POST "http://127.0.0.1:8000/train"
 ```
 
 Esse endpoint:
@@ -383,20 +383,19 @@ O dashboard consulta o banco para exibir:
 
 ### 6.10. Exemplos de uso da API
 
-Base pública:
-
-- `https://rodrigojager.com/datathon`
+Base local de exemplo:
+- `http://127.0.0.1:8000`
 
 Verificação de saúde:
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/health"
+curl -X GET "http://127.0.0.1:8000/health"
 ```
 
 Normalização:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/normalize" ^
+curl -X POST "http://127.0.0.1:8000/data/normalize" ^
   -F "file=@dados/BASE DE DADOS - DATATHON - PEDE2024.csv" ^
   --output arquivo_normalizado.csv
 ```
@@ -404,26 +403,26 @@ curl -X POST "https://rodrigojager.com/datathon/data/normalize" ^
 Bootstrap da base:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/bootstrap"
+curl -X POST "http://127.0.0.1:8000/data/bootstrap"
 ```
 
 Ingestão incremental:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/data/ingest?reference_year=2025" ^
+curl -X POST "http://127.0.0.1:8000/data/ingest?reference_year=2025" ^
   -F "file=@meu_arquivo_2025.csv"
 ```
 
 Treino:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/train"
+curl -X POST "http://127.0.0.1:8000/train"
 ```
 
 Predição:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/predict?reference_year=2024&selected_model_id=random_forest__strategy_b" ^
+curl -X POST "http://127.0.0.1:8000/predict?reference_year=2024&selected_model_id=random_forest__strategy_b" ^
   -F "file=@dados/BASE DE DADOS - DATATHON - PEDE2024.csv"
 ```
 
@@ -439,30 +438,30 @@ Além da classe principal, essa chamada pode devolver:
 Drift:
 
 ```bash
-curl -X POST "https://rodrigojager.com/datathon/monitor/drift?reference_year=2024" ^
+curl -X POST "http://127.0.0.1:8000/monitor/drift?reference_year=2024" ^
   -F "file=@dados/BASE DE DADOS - DATATHON - PEDE2024.csv"
 ```
 
 Métricas e logs:
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/metrics"
+curl -X GET "http://127.0.0.1:8000/monitor/metrics"
 ```
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/logs?limit=50"
+curl -X GET "http://127.0.0.1:8000/monitor/logs?limit=50"
 ```
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/baseline-analysis"
+curl -X GET "http://127.0.0.1:8000/monitor/baseline-analysis"
 ```
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/actionable-insights"
+curl -X GET "http://127.0.0.1:8000/monitor/actionable-insights"
 ```
 
 ```bash
-curl -X GET "https://rodrigojager.com/datathon/monitor/transition-scores"
+curl -X GET "http://127.0.0.1:8000/monitor/transition-scores"
 ```
 
 ### 6.11. Relatórios exportáveis
@@ -494,10 +493,6 @@ Conexão usada pela aplicação no compose:
 - `postgresql+psycopg://datathon:datathon@postgres:5432/datathon`
 
 Quando a aplicação é publicada atrás de um prefixo de URL, a variável `ROOT_PATH` pode ser usada para manter links, assets e chamadas internas coerentes com o basepath publicado.
-
-Deploy publicado:
-
-- `https://rodrigojager.com/datathon`
 
 ### 6.13. Testes
 
